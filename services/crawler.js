@@ -69,10 +69,11 @@ class Crawler {
     crawElementFromWebPage(URL) {
         return new Promise((resolve, reject) => {
             request(URL, function (err, res, body) {
+                const { headers } = res;
                 if(err) {
                     console.log(err);
                     reject(err);
-                } else {
+                } else if (headers !== undefined && new Crawler().isSafeContent(headers['content-type'] || '')){
                     let urlList = [];
                     const filterItems = ['#', 'javascript:void(0)', '/'];
                     let $ = cheerio.load(body);
@@ -94,6 +95,8 @@ class Crawler {
                         }
                     });
                     resolve(urlList);
+                } else {
+                    resolve([]);
                 }
             });
         });
