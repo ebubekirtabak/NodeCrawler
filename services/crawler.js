@@ -41,6 +41,14 @@ class Crawler {
         });
     }
 
+    isSafeContent(contentType) {
+        const disabledContentTypes = ['application/pdf'];
+        if (disabledContentTypes.indexOf(contentType) < 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     crawElementFromWebPage(URL) {
         return new Promise((resolve, reject) => {
             request(URL, function (err, res, body) {
