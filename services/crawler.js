@@ -49,6 +49,23 @@ class Crawler {
             return false;
         }
     }
+
+    isSafeUrl(url) {
+        const filterKeywords = ['http://', 'https://', '#', '~/', '/-/', 'mailto:', 'tel:', '.pdf'];
+        let isSafe = true;
+        if (!url) {
+            return false;
+        }
+
+        for (let i = 0; i < filterKeywords.length; ++i) {
+            if (url.startsWith(filterKeywords[i])) {
+                isSafe = false;
+        }
+        }
+
+        return isSafe;
+    }
+
     crawElementFromWebPage(URL) {
         return new Promise((resolve, reject) => {
             request(URL, function (err, res, body) {
