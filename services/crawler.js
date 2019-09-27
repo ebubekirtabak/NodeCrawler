@@ -75,22 +75,14 @@ class Crawler {
                     reject(err);
                 } else if (headers !== undefined && new Crawler().isSafeContent(headers['content-type'] || '')){
                     let urlList = [];
-                    const filterItems = ['#', 'javascript:void(0)', '/'];
+                    const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
                     let $ = cheerio.load(body);
                     $('a').each(function(index){
                         const href = $(this).attr('href');
                         urlList = [...urlList, href];
                     });
                     urlList = urlList.map(url => {
-                        if (url && filterItems.indexOf(url) < 0
-                            && !url.startsWith('http://')
-                            && !url.startsWith('https://')
-                            && !url.startsWith('#')
-                            && !url.startsWith('~/')
-                            && !url.startsWith('/-/')
-                            && !url.startsWith('mailto:')
-                            && !url.startsWith('tel:')
-                            && !url.endsWith('.pdf')) {
+                        if (new Crawler().isSafeUrl(url) && filterItems.indexOf(url) < 0) {
                             return url;
                         }
                     });
@@ -101,6 +93,7 @@ class Crawler {
             });
         });
     }
+
 }
 
 module.exports = { Crawler };
