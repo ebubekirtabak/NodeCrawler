@@ -37,11 +37,11 @@ class Crawler {
                 }
             });
             if ((urlIndex + 1) < urlList.length) {
-            urlIndex += 1;
+                urlIndex += 1;
                 historyUrlList = [...historyUrlList, url];
-            this.crawPageByUrl(startUrl);
+                this.crawPageByUrl(startUrl);
             } else {
-                console.log(JSON.stringify(foundList));
+                console.log(foundList);
             }
         }).catch((error) => {
             console.log(error)
