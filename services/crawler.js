@@ -5,10 +5,11 @@ let historyUrlList = [];
 let foundList = [];
 let urlIndex = -1;
 let startUrl = '';
+let options = {};
 class Crawler {
 
-    constructor(startUrl) {
-
+    constructor(startUrl, options) {
+        this.options = options;
     }
 
     startCrawler(url) {
