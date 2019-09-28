@@ -1,5 +1,6 @@
 const request = require('request');
 const cheerio = require('cheerio');
+
 let urlList = [];
 let historyUrlList = [];
 let foundList = [];
@@ -88,13 +89,29 @@ class Crawler {
                     const bodyElement = $('body');
                     bodyElement.each(function (index) {
                         const elementText = $(this).text();
-                        const keywordIndex = elementText.toString().toLowerCase().search('IoT');
+                        const { keyword } = self.options;
+                        const keywordIndex = elementText.search(keyword);
                         if (keywordIndex >= 0) {
-                            foundList = [...foundList, {
-                                url: URL,
-                                element: $(this),
-                                startIndex: keywordIndex
-                            }];
+                            const foundItemIndex = foundList.findIndex(item => item.url === URL);
+                            if (foundItemIndex < 0) {
+                                foundList = [...foundList, {
+                                    url: URL,
+                                    keyword: keyword,
+                                    elements: [{ 
+                                        html: $(this),
+                                        points: [keywordIndex, (keywordIndex + keyword.length)]
+                                    }]
+                                }];
+                            } else {
+                                const { elements } = foundList[foundItemIndex];
+                                foundList[foundItemIndex].elements = [
+                                    ...elements, 
+                                    { 
+                                        html: $(this),
+                                        points: [keywordIndex, (keywordIndex + keyword.length)]
+                                    }
+                                ];
+                            }
                         }
                     });
                     $('a').each(function(index){
