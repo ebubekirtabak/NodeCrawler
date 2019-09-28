@@ -3,6 +3,7 @@ const cheerio = require('cheerio');
 let urlList = [];
 let historyUrlList = [];
 let urlIndex = 0;
+let urlIndex = -1;
 let startUrl = '';
 class Crawler {
 
@@ -16,7 +17,7 @@ class Crawler {
     }
 
     crawPageByUrl(url) {
-        if (urlIndex > 0) {
+        if (urlIndex >= 0 && urlIndex < urlList.length) {
             let path = urlList[urlIndex];
             do  {
                 urlIndex += 1;
