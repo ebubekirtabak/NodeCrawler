@@ -6,9 +6,8 @@ const { Crawler } = require('../services/crawler');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   const url = 'https://www.chevron.com';
-  const httpService = new HttpService();
-  httpService.getHtmlDocumentByUrl(url);
-  new Crawler().startCrawler(url);
+  const options = { keyword: 'IoT' };
+  new Crawler(url, options).startCrawler(url);
   res.render('index', { title: 'NodeCrawler' });
 });
 
