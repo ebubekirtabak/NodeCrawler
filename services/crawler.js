@@ -59,11 +59,11 @@ class Crawler {
     }
 
     isSafeUrl(url) {
-        const filterKeywords = ['http://', 'https://', '#', '~/', '/-/', 'mailto:', 'tel:', '.pdf', 'javascript:', undefined, 'undefined'];
+        const filterKeywords = [
+            'http://', 'https://', '#', '~/', '/-/', 'mailto:', 'tel:', '.pdf', 'javascript:', null, undefined, 'undefined',
+            'https:', 'mailto:' ,"\”mailto:"
+        ];
         let isSafe = true;
-        if (!url) {
-            return false;
-        }
 
         for (let i = 0; i < filterKeywords.length; ++i) {
             if (url.startsWith(filterKeywords[i])) {
@@ -87,39 +87,13 @@ class Crawler {
                     const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
                     let $ = cheerio.load(body);
                     const bodyElement = $('body');
-                    bodyElement.each(function (index) {
-                        const elementText = $(this).text();
-                        const { keyword } = self.options;
-                        const keywordIndex = elementText.search(keyword);
-                        if (keywordIndex >= 0) {
-                            const foundItemIndex = foundList.findIndex(item => item.url === URL);
-                            if (foundItemIndex < 0) {
-                                foundList = [...foundList, {
-                                    url: URL,
-                                    keyword: keyword,
-                                    elements: [{ 
-                                        html: $(this),
-                                        points: [keywordIndex, (keywordIndex + keyword.length)]
-                                    }]
-                                }];
-                            } else {
-                                const { elements } = foundList[foundItemIndex];
-                                foundList[foundItemIndex].elements = [
-                                    ...elements, 
-                                    { 
-                                        html: $(this),
-                                        points: [keywordIndex, (keywordIndex + keyword.length)]
-                                    }
-                                ];
-                            }
-                        }
-                    });
+                    self.searchKeywordInElements(URL, bodyElement, $);
                     $('a').each(function(index){
                         const href = $(this).attr('href');
                         urlList = [...urlList, href];
                     });
                     urlList = urlList.map(url => {
-                        if (new Crawler().isSafeUrl(url) && filterItems.indexOf(url) < 0) {
+                        if (filterItems.indexOf(url) < 0 && new Crawler().isSafeUrl(url)) {
                             return url;
                         }
                     });
@@ -131,6 +105,36 @@ class Crawler {
         });
     }
 
+    searchKeywordInElements(URL, bodyElement, $) {
+        const self = this;
+        bodyElement.each(function (index) {
+            const elementText = $(this).text();
+            const { keyword } = self.options;
+            const keywordIndex = elementText.search(keyword);
+            if (keywordIndex >= 0) {
+                const foundItemIndex = foundList.findIndex(item => item.url === URL);
+                if (foundItemIndex < 0) {
+                    foundList = [...foundList, {
+                        url: URL,
+                        keyword: keyword,
+                        elements: [{ 
+                            html: $(this),
+                            points: [keywordIndex, (keywordIndex + keyword.length)]
+                        }]
+                    }];
+                } else {
+                    const { elements } = foundList[foundItemIndex];
+                    foundList[foundItemIndex].elements = [
+                        ...elements, 
+                        { 
+                            html: $(this),
+                            points: [keywordIndex, (keywordIndex + keyword.length)]
+                        }
+                    ];
+                }
+            }
+        });
+    }
 }
 
 module.exports = { Crawler };
