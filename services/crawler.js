@@ -35,9 +35,13 @@ class Crawler {
                     urlList = [...urlList, item];
                 }
             });
+            if ((urlIndex + 1) < urlList.length) {
             urlIndex += 1;
                 historyUrlList = [...historyUrlList, url];
             this.crawPageByUrl(startUrl);
+            } else {
+                console.log(JSON.stringify(foundList));
+            }
         }).catch((error) => {
             console.log(error)
         });
