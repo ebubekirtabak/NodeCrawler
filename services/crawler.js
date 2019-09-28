@@ -85,7 +85,8 @@ class Crawler {
                     let urlList = [];
                     const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
                     let $ = cheerio.load(body);
-                    $("*").each(function (index) {
+                    const bodyElement = $('body');
+                    bodyElement.each(function (index) {
                         const elementText = $(this).text();
                         const keywordIndex = elementText.toString().toLowerCase().search('IoT');
                         if (keywordIndex >= 0) {
