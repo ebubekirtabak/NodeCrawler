@@ -67,7 +67,7 @@ class Crawler {
         for (let i = 0; i < filterKeywords.length; ++i) {
             if (url.startsWith(filterKeywords[i])) {
                 isSafe = false;
-        }
+            }
         }
 
         return isSafe;
