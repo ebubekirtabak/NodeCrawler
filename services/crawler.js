@@ -29,7 +29,7 @@ class Crawler {
 
         console.log(urlIndex + ". Loading: " + url);
 
-        new Crawler().crawElementFromWebPage(url)
+        this.crawElementFromWebPage(url)
         .then((result) => {
             result.forEach((item) => {
                 if (urlList.indexOf(item) === -1) {
