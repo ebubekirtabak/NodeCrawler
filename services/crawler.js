@@ -36,6 +36,7 @@ class Crawler {
                 }
             });
             urlIndex += 1;
+                historyUrlList = [...historyUrlList, url];
             this.crawPageByUrl(startUrl);
         }).catch((error) => {
             console.log(error)
