@@ -51,7 +51,7 @@ class Crawler {
     }
 
     isSafeUrl(url) {
-        const filterKeywords = ['http://', 'https://', '#', '~/', '/-/', 'mailto:', 'tel:', '.pdf'];
+        const filterKeywords = ['http://', 'https://', '#', '~/', '/-/', 'mailto:', 'tel:', '.pdf', 'javascript:', undefined, 'undefined'];
         let isSafe = true;
         if (!url) {
             return false;
