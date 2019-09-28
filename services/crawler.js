@@ -74,13 +74,14 @@ class Crawler {
     }
 
     crawElementFromWebPage(URL) {
+        const self = this;
         return new Promise((resolve, reject) => {
             request(URL, function (err, res, body) {
                 const { headers } = res;
                 if(err) {
                     console.log(err);
                     reject(err);
-                } else if (headers !== undefined && new Crawler().isSafeContent(headers['content-type'] || '')){
+                } else if (headers !== undefined && self.isSafeContent(headers['content-type'] || '')){
                     let urlList = [];
                     const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
                     let $ = cheerio.load(body);
