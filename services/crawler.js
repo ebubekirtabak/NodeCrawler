@@ -2,7 +2,7 @@ const request = require('request');
 const cheerio = require('cheerio');
 let urlList = [];
 let historyUrlList = [];
-let urlIndex = 0;
+let foundList = [];
 let urlIndex = -1;
 let startUrl = '';
 class Crawler {
@@ -78,6 +78,17 @@ class Crawler {
                     let urlList = [];
                     const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
                     let $ = cheerio.load(body);
+                    $("*").each(function (index) {
+                        const elementText = $(this).text();
+                        const keywordIndex = elementText.toString().toLowerCase().search('IoT');
+                        if (keywordIndex >= 0) {
+                            foundList = [...foundList, {
+                                url: URL,
+                                element: $(this),
+                                startIndex: keywordIndex
+                            }];
+                        }
+                    });
                     $('a').each(function(index){
                         const href = $(this).attr('href');
                         urlList = [...urlList, href];
