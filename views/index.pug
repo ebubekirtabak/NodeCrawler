@@ -4,6 +4,9 @@ block content
   h1= title
   p Welcome to #{title}
   p About #{result.foundList.length} results
-  <% result.foundList.forEach(function(item) { %>
-  <li><%= item.url %></li>
-  <% }); %>
+  ul
+    for item in result.foundList
+      li
+        a(href=item.url target='_blank') #{item.url}
+        p !{item.summary}
+        p #{item.html}
