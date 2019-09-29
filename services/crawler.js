@@ -107,7 +107,7 @@ class Crawler {
                         const href = $(this).attr('href');
                         urlList = [...urlList, href];
                     });
-                    urlList = urlList.map(url => {
+                    urlList = urlList.filter(url => {
                         if (filterItems.indexOf(url) < 0 && new Crawler().isSafeUrl(url)) {
                             return url;
                         }
