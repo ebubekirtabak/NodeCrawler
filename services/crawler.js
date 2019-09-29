@@ -89,6 +89,20 @@ class Crawler {
         return isSafe;
     }
 
+    getFileType(url) {
+        try {
+            const matches = url.match(/\.\w{3,4}($|\?)/);
+            if (matches === null) {
+                return '';
+            }
+
+            return matches[0];
+        } catch(err) {
+            console.log(err);
+            return '';
+        }
+    }
+
     crawElementFromWebPage(URL) {
         const self = this;
         return new Promise((resolve, reject) => {
