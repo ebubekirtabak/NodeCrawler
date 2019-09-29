@@ -28,7 +28,7 @@ class Crawler {
             this.crawPageByUrl(startUrl);
             eventEmitter.on("crawlerOnSuccess", () => {
                 const result = { foundList: foundList, resultCounter: historyUrlList.length };
-                resolve(result);
+                resolve(JSON.stringify(result));
             });
         });
     }
