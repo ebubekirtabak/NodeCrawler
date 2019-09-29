@@ -21,6 +21,7 @@ class Crawler {
         historyUrlList = [];
         urlList = [];
     }
+
     startCrawler(url) {
         return new Promise((resolve, reject) => {
             this.refreshParameters();
@@ -120,7 +121,9 @@ class Crawler {
                     self.searchKeywordInElements(URL, bodyElement, $);
                     $('a').each(function(index){
                         const href = $(this).attr('href');
-                        urlList = [...urlList, href];
+                        if (href !== undefined) {
+                            urlList = [...urlList, href];
+                        }
                     });
                     urlList = urlList.filter(url => {
                         if (filterFiles.indexOf(self.getFileType(url)) < 0 &&
