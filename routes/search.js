@@ -6,6 +6,7 @@ const { Crawler } = require('../services/crawler');
 
 /* GET Search page. */
 router.get('/', function(req, res, next) {
+    req.setTimeout(3600000);
     const { query } = req;
     if (query && query.url && query.keyword) {
         const url = query.url;
@@ -15,7 +16,7 @@ router.get('/', function(req, res, next) {
             res.json(json);
         });
     } else {
-        res.json({});
+        res.json({ error: 'parameters not found.' });
     }
 });
 
