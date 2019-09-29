@@ -15,8 +15,15 @@ class Crawler {
         this.options = options;
     }
 
+    refreshParameters() {
+        urlIndex = -1;
+        foundList = [];
+        historyUrlList = [];
+        urlList = [];
+    }
     startCrawler(url) {
         return new Promise((resolve, reject) => {
+            this.refreshParameters();
             startUrl = url;
             this.crawPageByUrl(startUrl);
             eventEmitter.on("crawlerOnSuccess", () => {
