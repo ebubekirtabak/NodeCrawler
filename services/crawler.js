@@ -123,17 +123,21 @@ class Crawler {
     searchKeywordInElements(URL, bodyElement, $) {
         const self = this;
         bodyElement.each(function (index) {
-            const elementText = $(this).text();
+            const elementText = $(this).textContent || $(this).text();
             const { keyword } = self.options;
-            const keywordIndex = elementText.search(keyword);
+            const keywordIndex = elementText.search(keyword) || elementText.toLowerCase().search(keyword.toLowerCase());
             if (keywordIndex >= 0) {
                 const foundItemIndex = foundList.findIndex(item => item.url === URL);
+                let summary = elementText.substring((keywordIndex - 80), 120);
+                summary = summary.replace(/<[^>]*>/g, "")
+                    .replace(`/\${keyword}/g`, `<span style="background-color: yellow; color: black;">${keyword}</span>`);
                 if (foundItemIndex < 0) {
                     foundList = [...foundList, {
                         url: URL,
                         keyword: keyword,
                         elements: [{
-                            html: $(this),
+                            html: $(this).html() || '',
+                            summary: summary,
                             points: [keywordIndex, (keywordIndex + keyword.length)]
                         }]
                     }];
@@ -142,7 +146,8 @@ class Crawler {
                     foundList[foundItemIndex].elements = [
                         ...elements,
                         {
-                            html: $(this),
+                            html: $(this).html() || '',
+                            summary: summary,
                             points: [keywordIndex, (keywordIndex + keyword.length)]
                         }
                     ];
