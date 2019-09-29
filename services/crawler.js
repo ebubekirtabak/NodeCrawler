@@ -1,6 +1,8 @@
 const request = require('request');
 const cheerio = require('cheerio');
+const event = require("events");
 
+const eventEmitter = new event.EventEmitter();
 let urlList = [];
 let historyUrlList = [];
 let foundList = [];
@@ -14,8 +16,14 @@ class Crawler {
     }
 
     startCrawler(url) {
-        startUrl = url;
-        this.crawPageByUrl(startUrl);
+        return new Promise((resolve, reject) => {
+            startUrl = url;
+            this.crawPageByUrl(startUrl);
+            eventEmitter.on("crawlerOnSuccess", () => {
+                const result = { foundList: foundList, resultCounter: historyUrlList.length };
+                resolve(result);
+            });
+        });
     }
 
     crawPageByUrl(url) {
@@ -28,7 +36,7 @@ class Crawler {
             url += path
         }
 
-        console.log(urlIndex + ". Loading: " + url);
+        console.log(urlIndex + ". Loading: " + url + ' / ' + urlList.length);
 
         this.crawElementFromWebPage(url)
         .then((result) => {
@@ -42,7 +50,7 @@ class Crawler {
                 historyUrlList = [...historyUrlList, url];
                 this.crawPageByUrl(startUrl);
             } else {
-                console.log(foundList);
+                eventEmitter.emit('crawlerOnSuccess');
             }
         }).catch((error) => {
             console.log(error)
@@ -61,7 +69,7 @@ class Crawler {
     isSafeUrl(url) {
         const filterKeywords = [
             'http://', 'https://', '#', '~/', '/-/', 'mailto:', 'tel:', '.pdf', 'javascript:', null, undefined, 'undefined',
-            'https:', 'mailto:' ,"\”mailto:"
+            'https:', 'mailto:' ,'\”mailto:'
         ];
         let isSafe = true;
 
@@ -117,7 +125,7 @@ class Crawler {
                     foundList = [...foundList, {
                         url: URL,
                         keyword: keyword,
-                        elements: [{ 
+                        elements: [{
                             html: $(this),
                             points: [keywordIndex, (keywordIndex + keyword.length)]
                         }]
@@ -125,8 +133,8 @@ class Crawler {
                 } else {
                     const { elements } = foundList[foundItemIndex];
                     foundList[foundItemIndex].elements = [
-                        ...elements, 
-                        { 
+                        ...elements,
+                        {
                             html: $(this),
                             points: [keywordIndex, (keywordIndex + keyword.length)]
                         }
