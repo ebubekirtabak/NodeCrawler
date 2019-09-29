@@ -114,6 +114,7 @@ class Crawler {
                 } else if (headers !== undefined && self.isSafeContent(headers['content-type'] || '')){
                     let urlList = [];
                     const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
+                    const filterFiles = ['.jpg', '.png', '.pdf'];
                     let $ = cheerio.load(body);
                     const bodyElement = $('body');
                     self.searchKeywordInElements(URL, bodyElement, $);
@@ -122,7 +123,8 @@ class Crawler {
                         urlList = [...urlList, href];
                     });
                     urlList = urlList.filter(url => {
-                        if (filterItems.indexOf(url) < 0 && new Crawler().isSafeUrl(url)) {
+                        if (filterFiles.indexOf(self.getFileType(url)) < 0 &&
+                            filterItems.indexOf(url) < 0 && new Crawler().isSafeUrl(url)) {
                             return url;
                         }
                     });
