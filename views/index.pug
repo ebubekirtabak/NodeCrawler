@@ -3,3 +3,7 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+  p About #{result.foundList.length} results
+  <% result.foundList.forEach(function(item) { %>
+  <li><%= item.url %></li>
+  <% }); %>
