@@ -36,10 +36,10 @@ class Crawler {
     crawPageByUrl(url) {
         if (urlIndex >= 0 && urlIndex < urlList.length) {
             let path = urlList[urlIndex];
-            do  {
+            while (historyUrlList.indexOf(path) >= 0) {
                 urlIndex += 1;
                 path = urlList[urlIndex];
-            } while (historyUrlList.indexOf(path) >= 0);
+            }
             url += path
         }
 
