@@ -108,8 +108,9 @@ class Crawler {
         const self = this;
         return new Promise((resolve, reject) => {
             request(URL, function (err, res, body) {
+                if (!err && res) {
                 const { headers } = res;
-                if(err) {
+                    if (headers !== undefined && self.isSafeContent(headers['content-type'] || '')){
                     console.log(err);
                     reject(err);
                 } else if (headers !== undefined && self.isSafeContent(headers['content-type'] || '')){
@@ -133,6 +134,10 @@ class Crawler {
                     });
                     resolve(urlList);
                 } else {
+                    resolve([]);
+                }
+                } else {
+                    console.log(err);
                     resolve([]);
                 }
             });
