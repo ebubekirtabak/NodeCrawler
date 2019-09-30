@@ -13,6 +13,7 @@ class Crawler {
 
     constructor(startUrl, options) {
         this.options = options;
+        eventEmitter.setMaxListeners(0);
     }
 
     refreshParameters() {
@@ -109,33 +110,30 @@ class Crawler {
         return new Promise((resolve, reject) => {
             request(URL, function (err, res, body) {
                 if (!err && res) {
-                const { headers } = res;
+                    const { headers } = res;
                     if (headers !== undefined && self.isSafeContent(headers['content-type'] || '')){
-                    console.log(err);
-                    reject(err);
-                } else if (headers !== undefined && self.isSafeContent(headers['content-type'] || '')){
-                    let urlList = [];
-                    const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
-                    const filterFiles = ['.jpg', '.png', '.pdf'];
-                    let $ = cheerio.load(body);
-                    const bodyElement = $('body');
-                    self.searchKeywordInElements(URL, bodyElement, $);
-                    $('a').each(function(index){
-                        const href = $(this).attr('href');
-                        if (href !== undefined) {
-                            urlList = [...urlList, href];
-                        }
-                    });
-                    urlList = urlList.filter(url => {
-                        if (filterFiles.indexOf(self.getFileType(url)) < 0 &&
-                            filterItems.indexOf(url) < 0 && new Crawler().isSafeUrl(url)) {
-                            return url;
-                        }
-                    });
-                    resolve(urlList);
-                } else {
-                    resolve([]);
-                }
+                        let urlList = [];
+                        const filterItems = ['#', 'javascript:void(0)', '/', undefined, 'undefined'];
+                        const filterFiles = ['.jpg', '.png', '.pdf'];
+                        let $ = cheerio.load(body);
+                        const bodyElement = $('body');
+                        self.searchKeywordInElements(URL, bodyElement, $);
+                        $('a').each(function(index){
+                            const href = $(this).attr('href');
+                            if (href !== undefined) {
+                                urlList = [...urlList, href];
+                            }
+                        });
+                        urlList = urlList.filter(url => {
+                            if (filterFiles.indexOf(self.getFileType(url)) < 0 &&
+                                filterItems.indexOf(url) < 0 && new Crawler().isSafeUrl(url)) {
+                                return url;
+                            }
+                        });
+                        resolve(urlList);
+                    } else {
+                        resolve([]);
+                    }
                 } else {
                     console.log(err);
                     resolve([]);
@@ -154,7 +152,7 @@ class Crawler {
             const keywordIndex = elementText.search(keyword) || elementText.toLowerCase().search(keyword.toLowerCase());
             if (keywordIndex >= 0) {
                 const foundItemIndex = foundList.findIndex(item => item.url === URL);
-                let summary = elementText.substring((keywordIndex - 80), 120);
+                let summary = elementText.substring((keywordIndex - 80), (keywordIndex + 80));
                 summary = summary.replace(/<[^>]*>/g, "")
                     .replace(/[\r\n\t]+(.+[\r\n\t]+.+)[\t\r\n]+/g, '')
                     .replace(`/\${keyword}/g`, `<span style="background-color: yellow; color: black;">${keyword}</span>`);
