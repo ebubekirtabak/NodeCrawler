@@ -8,5 +8,5 @@ block content
     for item in result.foundList
       li
         a(href=item.url target='_blank') #{item.url}
-        p !{item.summary}
-        p #{item.html}
+        for element in item.elements
+          p !{element.summary}
